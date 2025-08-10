@@ -26,6 +26,7 @@ const PetDetails = () => {
   useEffect(() => {
     getPet();
   }, []);
+  
   const deletePet = async (petId: number) => {
     try {
       await axios.delete(`${BASE_URL}/${petId}`);
