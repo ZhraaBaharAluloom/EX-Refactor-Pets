@@ -1,22 +1,19 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { Pet } from "@/data/pets";
+import { router } from "expo-router";
 
 interface PetItemProps {
-  pet: {
-    id: number;
-    name: string;
-    description: string;
-    type: string;
-    image: string;
-    image2: string;
-  };
+  pet: Pet;
 }
 
 const PetItem = ({ pet }: PetItemProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.petInfo}>
-        <Image source={{ uri: pet.image }} style={styles.image} />
+        <TouchableOpacity onPress={() => router.push(`/${pet.id}`)}>
+          <Image source={{ uri: pet.image }} style={styles.image} />
+        </TouchableOpacity>
 
         <Text style={styles.name}>{pet.name}</Text>
 

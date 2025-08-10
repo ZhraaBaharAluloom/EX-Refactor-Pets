@@ -1,16 +1,40 @@
 import {
+  ActivityIndicator,
+  ActivityIndicatorComponent,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
-import pets from "@/data/pets";
+import React, { useState, useEffect } from "react";
+import { Pet } from "@/data/pets";
+import { BASE_URL } from "@/api/petsApi";
+import axios from "axios";
 import PetItem from "./PetItem";
+import { router } from "expo-router";
 
 const PetList = () => {
-  const petList = pets.map((pet) => <PetItem key={pet.id} pet={pet} />);
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const getPets = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(BASE_URL);
+      const data = res.data as Pet[];
+      setPets(data);
+    } catch (error) {
+      setError(true);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getPets();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -35,8 +59,12 @@ const PetList = () => {
         </TouchableOpacity>
       </ScrollView>
 
+      {loading && <ActivityIndicator size="large" />}
+      {error && <Text>An Error occurred, try again later</Text>}
       {/* Pet List */}
-      {petList}
+      {pets.map((pet) => (
+        <PetItem key={pet.id} pet={pet} />
+      ))}
     </ScrollView>
   );
 };
