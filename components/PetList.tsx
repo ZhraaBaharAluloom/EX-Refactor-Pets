@@ -5,14 +5,28 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import pets from "@/data/pets";
 import PetItem from "./PetItem";
+import { instance } from "@/api";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
   const [displayPets, setDisplayPets] = useState(pets);
+
+  const getPets = async () => {
+    const response = await instance.get("/pets");
+    console.log("🚀 ~ getPets ~ response:", response.data);
+    if (!response) {
+      throw new Error("Failed to fetch weather");
+    }
+    return response;
+  };
+
+  useEffect(() => {
+    getPets();
+  }, []);
 
   const petList = displayPets
     .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
