@@ -1,11 +1,10 @@
 import { BASE_URL } from "@/api/petsApi";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
-import { reload } from "expo-router/build/global-state/routing";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Pet } from "@/data/pets";
-
+import {Stack} from "expo-router";
 const PetDetails = () => {
   const { petId } = useLocalSearchParams();
   const [pet, setPet] = useState<Pet | undefined>(undefined);
@@ -26,11 +25,11 @@ const PetDetails = () => {
 
   useEffect(() => {
     getPet();
-  });
+  }, []);
   const deletePet = async (petId: number) => {
     try {
       await axios.delete(`${BASE_URL}/${petId}`);
-      router.replace("/");
+      router.back();
       return true;
     } catch (error) {
       return false;
@@ -38,11 +37,13 @@ const PetDetails = () => {
   };
   return (
     <View style={styles.container}>
+      <Stack.Screen options={{title:pet?.name || "Pet Details"}}/>
+      {loading && <ActivityIndicator size="large" />}
+      {error && <Text>An Error occurred, try again later</Text>}
       {pet && (
         <>
           <Text style={styles.name}>{pet.name}</Text>
           <Image source={{ uri: pet.image }} style={styles.image} />
-          <Text style={styles.description}> {pet.description}</Text>
           <Text style={styles.type}>Type: {pet.type}</Text>
         </>
       )}
@@ -57,6 +58,7 @@ const PetDetails = () => {
           </TouchableOpacity>
         )}
       </View>
+      
     </View>
   );
 };

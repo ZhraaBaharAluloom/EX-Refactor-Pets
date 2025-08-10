@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Pet } from "@/data/pets";
@@ -41,7 +42,12 @@ const PetList = () => {
       style={styles.containerStyle}
     >
       {/* Search Input */}
-      <TextInput placeholder="Search for a pet" style={styles.searchInput} />
+      <View  style={[styles.filterContainer, {alignContent: "center"}]}>
+        <TextInput placeholder="Search for a pet" style={styles.searchInput} />
+          <TouchableOpacity style={styles.filterButton} onPress={() => router.push("/addPet")}>
+            <Text>Add</Text>
+        </TouchableOpacity>
+  </View>
 
       {/* Filter by type */}
       <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
@@ -83,7 +89,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   searchInput: {
-    width: "100%",
+    width: "75%",
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
